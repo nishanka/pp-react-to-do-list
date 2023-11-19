@@ -3,8 +3,10 @@ import Modal from './UI/Modal';
 
 import classes from './NewTodo.module.css';
 
-const NewTodo = ({ onCancel, onSubmit }) => {
-  const [todoText, setTodoText] = useState('');
+const EditTodo = ({ onCancel, onSubmit, editingItem }) => {
+  //   return <div>Populate Edit form here.... {editingItem}</div>;
+
+  const [todoText, setTodoText] = useState(editingItem);
   const textInputRef = useRef();
 
   const onChangeText = (e) => {
@@ -13,15 +15,16 @@ const NewTodo = ({ onCancel, onSubmit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(todoText);
+    onSubmit(editingItem, todoText);
     setTodoText('');
     textInputRef.current.focus();
+    onCancel();
   };
 
   return (
     <Modal onClose={onCancel}>
       <div className={classes['new-todo']}>
-        <h3 className='text-sm-center'>Add ToDo</h3>
+        <h3 className='text-sm-center'>Edit ToDo</h3>
 
         <button
           type='button'
@@ -64,4 +67,4 @@ const NewTodo = ({ onCancel, onSubmit }) => {
   );
 };
 
-export default NewTodo;
+export default EditTodo;

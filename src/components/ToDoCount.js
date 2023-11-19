@@ -1,10 +1,13 @@
 import React from 'react';
 
-const ToDoCount = ({ count }) => {
+const ToDoCount = ({ alertType, count, info }) => {
   return (
     <div className='summary'>
-      <div className='alert alert-info text-center fw-bold' role='alert'>
-        {count} tasks left
+      <div
+        className={`alert alert-${alertType} text-center fw-bold`}
+        role='alert'
+      >
+        {count} {info}
       </div>
     </div>
   );
