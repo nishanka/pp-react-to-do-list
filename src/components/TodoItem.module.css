@@ -1,0 +1,17 @@
+.todo-actions {
+    margin: 0.25rem 0 0;
+}
+
+.todo-actions button {
+    margin: 0.25rem;
+}
+
+@media (min-width: 768px) {
+    .todo-actions {
+        margin-top: 0;
+    }
+
+    .todo-actions button {
+        margin: 0 0 0 0.5rem;
+    }
+}

@@ -1,0 +1,10 @@
+.new-todo {
+    position: relative;
+}
+
+.new-todo .close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    outline: none;
+}
