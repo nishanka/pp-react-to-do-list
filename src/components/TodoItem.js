@@ -10,18 +10,24 @@ const TodoItem = ({ item, onDelete, onEdit, onComplete, category }) => {
       <div className={`${classes['todo-actions']} actions`}>
         {category !== 'completed' && (
           <Button
-            btnClasses='btn-success btn-sm'
+            btnClasses='btn-outline-success btn-sm'
             onClick={() => onComplete(item)}
           >
             Complete
           </Button>
         )}
         {category !== 'completed' && (
-          <Button btnClasses='btn-warning btn-sm' onClick={() => onEdit(item)}>
+          <Button
+            btnClasses='btn-outline-warning btn-sm'
+            onClick={() => onEdit(item)}
+          >
             Edit
           </Button>
         )}
-        <Button btnClasses='btn-danger btn-sm' onClick={() => onDelete(item)}>
+        <Button
+          btnClasses='btn-outline-danger btn-sm'
+          onClick={() => onDelete(item)}
+        >
           Delete
         </Button>
       </div>

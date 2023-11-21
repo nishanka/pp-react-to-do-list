@@ -9,30 +9,33 @@ import Todos from './components/Todos';
 import CompletedTodos from './components/CompletedTodos';
 import NewTodo from './components/NewTodo';
 import EditTodo from './components/EditTodo';
-
-const INITIAL_TODOS = JSON.parse(localStorage.getItem('todos')) || [];
-const INITIAL_COMPLETED_TODOS =
-  JSON.parse(localStorage.getItem('completed-todos')) || [];
+import {
+  getStoredData,
+  setStoredData,
+  filterTodosData,
+  INITIAL_TODOS,
+  INITIAL_COMPLETED_TODOS,
+} from './util/data';
 
 function App() {
   const [todos, setTodos] = useState(INITIAL_TODOS);
   const [completedTodos, setCompletedTodos] = useState(INITIAL_COMPLETED_TODOS);
 
-  const [isAddingNew, setIsAddingNew] = useState(false);
+  const [isAdding, setIsAddingNew] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingItem, setEditingItem] = useState('');
 
   useEffect(() => {
-    localStorage.setItem('todos', JSON.stringify(todos));
-    localStorage.setItem('completed-todos', JSON.stringify(completedTodos));
+    setStoredData('todos', todos);
+    setStoredData('completed-todos', completedTodos);
   }, [todos, completedTodos]);
 
   useEffect(() => {
-    setTodos(JSON.parse(localStorage.getItem('todos')));
+    setTodos(getStoredData('todos'));
   }, []);
 
   const toggleNewTodoForm = () => {
-    setIsAddingNew(!isAddingNew);
+    setIsAddingNew(!isAdding);
   };
 
   const onDelete = (todoName) => {
@@ -41,12 +44,9 @@ function App() {
         (item) => item !== todoName
       );
       setCompletedTodos(newCompletedTodos);
-
       return;
     }
-
-    const storedTodos = JSON.parse(localStorage.getItem('todos'));
-    const newStoredTodos = storedTodos.filter((item) => item !== todoName);
+    const newStoredTodos = filterTodosData('todos', todoName);
     setTodos(newStoredTodos);
   };
 
@@ -60,22 +60,19 @@ function App() {
   };
 
   const onUpdate = (prevname, updatedname) => {
-    const storedTodos = JSON.parse(localStorage.getItem('todos'));
-
+    const storedTodos = getStoredData('todos');
     const updatedTodos = storedTodos.map((item) => {
       if (item === prevname) {
         return updatedname;
       }
       return item;
     });
-
-    localStorage.setItem('todos', JSON.stringify(updatedTodos));
+    setStoredData('todos', updatedTodos);
     setTodos(updatedTodos);
   };
 
   const onComplete = (todoName) => {
-    const storedTodos = JSON.parse(localStorage.getItem('todos'));
-    const newStoredTodos = storedTodos.filter((item) => item !== todoName);
+    const newStoredTodos = filterTodosData('todos', todoName);
     setTodos(newStoredTodos);
 
     setCompletedTodos((prevCompletedTodos) => {
@@ -87,8 +84,12 @@ function App() {
     <MainContent>
       <Header onClickAddTodo={toggleNewTodoForm} />
 
-      {isAddingNew && (
-        <NewTodo onSubmit={onSubmitTodo} onCancel={toggleNewTodoForm} />
+      {isAdding && (
+        <NewTodo
+          onSubmit={onSubmitTodo}
+          onCancel={toggleNewTodoForm}
+          isAdding={isAdding}
+        />
       )}
 
       {isEditing && (
