@@ -7,7 +7,7 @@ const CompletedTodos = ({ todos, onDeleteTodo }) => {
   const category = 'completed';
 
   return (
-    <div className='completed-tasks mt-5 p-3 bg-body-secondary rounded'>
+    <div className='completed-tasks mt-5 p-3 bg-success bg-opacity-25 rounded'>
       <ToDoCount count={toDosCount} alertType='info' info='completed' />
       <TodoList todos={todos} onDeleteTodo={onDeleteTodo} category={category} />
     </div>

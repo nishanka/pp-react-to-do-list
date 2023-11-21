@@ -5,18 +5,17 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 import MainContent from './components/UI/MainContent';
 import Header from './components/Header';
-import NewTodo from './components/NewTodo';
 import Todos from './components/Todos';
-import EditTodo from './components/EditTodo';
 import CompletedTodos from './components/CompletedTodos';
+import NewTodo from './components/NewTodo';
+import EditTodo from './components/EditTodo';
 
-const INITIAL_VALUE = JSON.parse(localStorage.getItem('todos')) || [];
+const INITIAL_TODOS = JSON.parse(localStorage.getItem('todos')) || [];
 const INITIAL_COMPLETED_TODOS =
   JSON.parse(localStorage.getItem('completed-todos')) || [];
 
 function App() {
-  // const [todoText, setTodoText] = useState('');
-  const [todos, setTodos] = useState(INITIAL_VALUE);
+  const [todos, setTodos] = useState(INITIAL_TODOS);
   const [isAddingNewTodo, setIsAddingNewTodo] = useState(false);
   const [isEditingTodo, setIsEditingTodo] = useState(false);
   const [editingItem, setEditingItem] = useState('');
@@ -32,6 +31,10 @@ function App() {
     // console.log('useEffect... Getting from localStorage...');
     setTodos(JSON.parse(localStorage.getItem('todos')));
   }, []);
+
+  const toggleNewTodoForm = () => {
+    setIsAddingNewTodo(!isAddingNewTodo);
+  };
 
   const openNewTodoForm = () => {
     setIsAddingNewTodo(true);
@@ -101,23 +104,37 @@ function App() {
   return (
     <MainContent>
       <Header onClickAddTodo={openNewTodoForm} />
+
       {isAddingNewTodo && (
-        <NewTodo onCancel={closeNewTodoForm} onSubmit={onSubmitTodo} />
+        <NewTodo onSubmit={onSubmitTodo} onCancel={toggleNewTodoForm} />
       )}
+
       {isEditingTodo && (
         <EditTodo
-          onCancel={closeEditTodoForm}
           onSubmit={onUpdateTodo}
+          onCancel={closeEditTodoForm}
           editingItem={editingItem}
         />
       )}
-      <Todos
-        todos={todos}
-        onDeleteTodo={onDeleteTodo}
-        openEditTodo={openEditTodoForm}
-        onCompleteTodo={onCompleteTodo}
-      />
-      <CompletedTodos todos={completedTodos} onDeleteTodo={onDeleteTodo} />
+
+      {!todos.length > 0 && (
+        <div className='alert alert-danger text-center fw-bold' role='alert'>
+          You have no ToDos...
+        </div>
+      )}
+
+      {todos.length > 0 && (
+        <Todos
+          todos={todos}
+          onDeleteTodo={onDeleteTodo}
+          openEditTodo={openEditTodoForm}
+          onCompleteTodo={onCompleteTodo}
+        />
+      )}
+
+      {completedTodos.length > 0 && (
+        <CompletedTodos todos={completedTodos} onDeleteTodo={onDeleteTodo} />
+      )}
     </MainContent>
   );
 }

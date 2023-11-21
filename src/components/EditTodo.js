@@ -1,11 +1,10 @@
 import React, { useRef, useState } from 'react';
 import Modal from './UI/Modal';
 
-import classes from './NewTodo.module.css';
+import CloseButton from './UI/CloseButton';
+import ToDoForm from './ToDoForm';
 
 const EditTodo = ({ onCancel, onSubmit, editingItem }) => {
-  //   return <div>Populate Edit form here.... {editingItem}</div>;
-
   const [todoText, setTodoText] = useState(editingItem);
   const textInputRef = useRef();
 
@@ -23,45 +22,16 @@ const EditTodo = ({ onCancel, onSubmit, editingItem }) => {
 
   return (
     <Modal onClose={onCancel}>
-      <div className={classes['new-todo']}>
+      <div className='edit-todo position-relative'>
         <h3 className='text-sm-center'>Edit ToDo</h3>
-
-        <button
-          type='button'
-          className={`btn-close ${classes['close']}`}
-          data-bs-dismiss='modal'
-          aria-label='Close'
-          onClick={onCancel}
-        ></button>
-
-        <form onSubmit={handleSubmit}>
-          <div className='mb-3'>
-            <label htmlFor='title'>Title</label>
-            <input
-              id='title'
-              type='text'
-              className='form-control'
-              ref={textInputRef}
-              onChange={onChangeText}
-              value={todoText}
-            />
-          </div>
-          <div className='actions d-flex justify-content-end'>
-            <button
-              type='submit'
-              className='btn btn-secondary align-self-center'
-              onClick={onCancel}
-            >
-              Cancel
-            </button>
-            <button
-              type='submit'
-              className='btn btn-primary align-self-center ms-2'
-            >
-              Save
-            </button>
-          </div>
-        </form>
+        <CloseButton onClick={onCancel} />
+        <ToDoForm
+          onCancel={onCancel}
+          onSubmit={handleSubmit}
+          textInputRef={textInputRef}
+          onChangeText={onChangeText}
+          todoText={todoText}
+        />
       </div>
     </Modal>
   );

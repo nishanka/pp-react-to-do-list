@@ -9,16 +9,19 @@ const TodoItem = ({ item, onDelete, onEdit, onComplete, category }) => {
       <span className='flex-grow-1 ms-2'>{item}</span>
       <div className={`${classes['todo-actions']} actions`}>
         {category !== 'completed' && (
-          <Button btnClasses='btn-success' onClick={() => onComplete(item)}>
+          <Button
+            btnClasses='btn-success btn-sm'
+            onClick={() => onComplete(item)}
+          >
             Complete
           </Button>
         )}
         {category !== 'completed' && (
-          <Button btnClasses='btn-warning' onClick={() => onEdit(item)}>
+          <Button btnClasses='btn-warning btn-sm' onClick={() => onEdit(item)}>
             Edit
           </Button>
         )}
-        <Button btnClasses='btn-danger' onClick={() => onDelete(item)}>
+        <Button btnClasses='btn-danger btn-sm' onClick={() => onDelete(item)}>
           Delete
         </Button>
       </div>
