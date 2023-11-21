@@ -2,7 +2,7 @@ import React from 'react';
 import TodoList from './TodoList';
 import ToDoCount from './ToDoCount';
 
-const Todos = ({ todos, onDeleteTodo, openEditTodo, onCompleteTodo }) => {
+const Todos = ({ todos, onDelete, openEdit, onComplete }) => {
   const toDosCount = todos.length;
 
   return (
@@ -11,9 +11,9 @@ const Todos = ({ todos, onDeleteTodo, openEditTodo, onCompleteTodo }) => {
       <ToDoCount count={toDosCount} alertType='warning' info='tasks left' />
       <TodoList
         todos={todos}
-        onDeleteTodo={onDeleteTodo}
-        openEditTodo={openEditTodo}
-        onCompleteTodo={onCompleteTodo}
+        onDelete={onDelete}
+        openEdit={openEdit}
+        onComplete={onComplete}
       />
     </div>
   );

@@ -16,54 +16,43 @@ const INITIAL_COMPLETED_TODOS =
 
 function App() {
   const [todos, setTodos] = useState(INITIAL_TODOS);
-  const [isAddingNewTodo, setIsAddingNewTodo] = useState(false);
-  const [isEditingTodo, setIsEditingTodo] = useState(false);
-  const [editingItem, setEditingItem] = useState('');
   const [completedTodos, setCompletedTodos] = useState(INITIAL_COMPLETED_TODOS);
 
+  const [isAddingNew, setIsAddingNew] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingItem, setEditingItem] = useState('');
+
   useEffect(() => {
-    // console.log('useEffect... Setting to localStorage...');
     localStorage.setItem('todos', JSON.stringify(todos));
     localStorage.setItem('completed-todos', JSON.stringify(completedTodos));
   }, [todos, completedTodos]);
 
   useEffect(() => {
-    // console.log('useEffect... Getting from localStorage...');
     setTodos(JSON.parse(localStorage.getItem('todos')));
   }, []);
 
   const toggleNewTodoForm = () => {
-    setIsAddingNewTodo(!isAddingNewTodo);
+    setIsAddingNew(!isAddingNew);
   };
 
-  const openNewTodoForm = () => {
-    setIsAddingNewTodo(true);
-  };
-
-  const closeNewTodoForm = () => {
-    setIsAddingNewTodo(false);
-  };
-
-  const onDeleteTodo = (key) => {
-    if (completedTodos.includes(key)) {
-      const newCompletedTodos = completedTodos.filter((item) => item !== key);
+  const onDelete = (itemId) => {
+    if (completedTodos.includes(itemId)) {
+      const newCompletedTodos = completedTodos.filter(
+        (item) => item !== itemId
+      );
       setCompletedTodos(newCompletedTodos);
 
       return;
     }
 
     const storedTodos = JSON.parse(localStorage.getItem('todos'));
-    const newStoredTodos = storedTodos.filter((item) => item !== key);
+    const newStoredTodos = storedTodos.filter((item) => item !== itemId);
     setTodos(newStoredTodos);
   };
 
-  const openEditTodoForm = (key) => {
-    setIsEditingTodo(true);
-    setEditingItem(key);
-  };
-
-  const closeEditTodoForm = () => {
-    setIsEditingTodo(false);
+  const toggleEditTodoForm = (itemId) => {
+    setIsEditing(!isEditing);
+    setEditingItem(itemId);
   };
 
   const onSubmitTodo = (todoName) => {
@@ -71,17 +60,12 @@ function App() {
   };
 
   const onUpdateTodo = (prevname, updatedname) => {
-    // console.log('Editing todo Previous Value...' + prevname);
-    // console.log('Editing todo New Value...' + updatedname);
-
-    // Lets Update localStorage
     const storedTodos = JSON.parse(localStorage.getItem('todos'));
 
     const updatedTodos = storedTodos.map((item) => {
       if (item === prevname) {
         return updatedname;
       }
-
       return item;
     });
 
@@ -89,9 +73,7 @@ function App() {
     setTodos(updatedTodos);
   };
 
-  const onCompleteTodo = (todoName) => {
-    // console.log('Completed ... ' + todoName);
-
+  const onComplete = (todoName) => {
     const storedTodos = JSON.parse(localStorage.getItem('todos'));
     const newStoredTodos = storedTodos.filter((item) => item !== todoName);
     setTodos(newStoredTodos);
@@ -103,16 +85,16 @@ function App() {
 
   return (
     <MainContent>
-      <Header onClickAddTodo={openNewTodoForm} />
+      <Header onClickAddTodo={toggleNewTodoForm} />
 
-      {isAddingNewTodo && (
+      {isAddingNew && (
         <NewTodo onSubmit={onSubmitTodo} onCancel={toggleNewTodoForm} />
       )}
 
-      {isEditingTodo && (
+      {isEditing && (
         <EditTodo
           onSubmit={onUpdateTodo}
-          onCancel={closeEditTodoForm}
+          onCancel={toggleEditTodoForm}
           editingItem={editingItem}
         />
       )}
@@ -126,14 +108,14 @@ function App() {
       {todos.length > 0 && (
         <Todos
           todos={todos}
-          onDeleteTodo={onDeleteTodo}
-          openEditTodo={openEditTodoForm}
-          onCompleteTodo={onCompleteTodo}
+          onDelete={onDelete}
+          openEdit={toggleEditTodoForm}
+          onComplete={onComplete}
         />
       )}
 
       {completedTodos.length > 0 && (
-        <CompletedTodos todos={completedTodos} onDeleteTodo={onDeleteTodo} />
+        <CompletedTodos todos={completedTodos} onDelete={onDelete} />
       )}
     </MainContent>
   );
