@@ -35,10 +35,10 @@ function App() {
     setIsAddingNew(!isAddingNew);
   };
 
-  const onDelete = (itemId) => {
-    if (completedTodos.includes(itemId)) {
+  const onDelete = (todoName) => {
+    if (completedTodos.includes(todoName)) {
       const newCompletedTodos = completedTodos.filter(
-        (item) => item !== itemId
+        (item) => item !== todoName
       );
       setCompletedTodos(newCompletedTodos);
 
@@ -46,20 +46,20 @@ function App() {
     }
 
     const storedTodos = JSON.parse(localStorage.getItem('todos'));
-    const newStoredTodos = storedTodos.filter((item) => item !== itemId);
+    const newStoredTodos = storedTodos.filter((item) => item !== todoName);
     setTodos(newStoredTodos);
   };
 
-  const toggleEditTodoForm = (itemId) => {
+  const toggleEditTodoForm = (todoName) => {
     setIsEditing(!isEditing);
-    setEditingItem(itemId);
+    setEditingItem(todoName);
   };
 
   const onSubmitTodo = (todoName) => {
     setTodos((prevTodos) => [...prevTodos, todoName]);
   };
 
-  const onUpdateTodo = (prevname, updatedname) => {
+  const onUpdate = (prevname, updatedname) => {
     const storedTodos = JSON.parse(localStorage.getItem('todos'));
 
     const updatedTodos = storedTodos.map((item) => {
@@ -93,7 +93,7 @@ function App() {
 
       {isEditing && (
         <EditTodo
-          onSubmit={onUpdateTodo}
+          onSubmit={onUpdate}
           onCancel={toggleEditTodoForm}
           editingItem={editingItem}
         />
