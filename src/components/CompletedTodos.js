@@ -12,10 +12,10 @@ const CompletedTodos = ({ todos, onDelete }) => {
   };
 
   return (
-    <div className='completed-todos mt-5 p-3 bg-success bg-opacity-25 rounded position-relative'>
+    <div className='completed-todos mt-4 p-3 bg-success bg-opacity-50 rounded position-relative'>
       <ToDoCount count={toDosCount} alertType='info' info='completed' />
       <button
-        className='position-absolute top-0 end-0 btn btn-outline-success border-3 m-4'
+        className='position-absolute top-0 end-0 btn btn-outline-success border-3 m-3'
         type='button'
         onClick={toggleTodoList}
       >

@@ -3,7 +3,7 @@ import TodoItem from './TodoItem';
 
 const TodoList = ({ todos, onDelete, openEdit, onComplete, category }) => {
   return (
-    <ol className='todos list-group list-group-numbered'>
+    <ol className='todos list-group list-group-numbered mt-3'>
       {todos.map((item) => (
         <TodoItem
           key={item}

@@ -5,7 +5,9 @@ import classes from './TodoItem.module.css';
 
 const TodoItem = ({ item, onDelete, onEdit, onComplete, category }) => {
   return (
-    <li className={`${classes['todo-item']} list-group-item d-md-flex`}>
+    <li
+      className={`${classes['todo-item']} list-group-item d-md-flex align-items-center`}
+    >
       <span className='flex-grow-1 ms-2'>{item}</span>
       <div className={`${classes['todo-actions']} actions flex-shrink-0`}>
         {category !== 'completed' && (
