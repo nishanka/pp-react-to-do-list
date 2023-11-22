@@ -16,3 +16,8 @@ export function filterTodosData(keyName, todoName) {
 // Set Initial Values
 export const INITIAL_TODOS = getStoredData('todos') || [];
 export const INITIAL_COMPLETED_TODOS = getStoredData('completed-todos') || [];
+export const INITIAL_NOTIFICATION = {
+  type: '',
+  message: '',
+  visibility: false,
+};

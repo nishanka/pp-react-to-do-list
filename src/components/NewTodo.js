@@ -9,6 +9,7 @@ import { isValidTodo } from '../util/validation.js';
 const NewTodo = ({ onCancel, onSubmit }) => {
   const [todoText, setTodoText] = useState('');
   const [taskIsInvalid, setTaskIsInvalid] = useState(false);
+  // const [isSubmitting, setIsSubmitting] = useState(true);
   const textInputRef = useRef();
 
   const onChangeText = (e) => {
@@ -18,8 +19,10 @@ const NewTodo = ({ onCancel, onSubmit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // setIsSubmitting(true);
 
     if (!isValidTodo(textInputRef)) {
+      // setIsSubmitting(false);
       setTaskIsInvalid(true);
       textInputRef.current.focus();
       return;
@@ -29,6 +32,7 @@ const NewTodo = ({ onCancel, onSubmit }) => {
     onSubmit(todoText);
     setTodoText('');
     textInputRef.current.focus();
+    // setIsSubmitting(false);
   };
 
   return (
@@ -36,6 +40,7 @@ const NewTodo = ({ onCancel, onSubmit }) => {
       <div className={`${classes['new-todo']} position-relative`}>
         <h3 className='text-sm-center'>Add ToDo</h3>
         <CloseButton onClick={onCancel} />
+        {/* {!isSubmitting && ( */}
         <ToDoForm
           onCancel={onCancel}
           onSubmit={handleSubmit}
@@ -44,6 +49,8 @@ const NewTodo = ({ onCancel, onSubmit }) => {
           todoText={todoText}
           taskIsInvalid={taskIsInvalid}
         />
+        {/* )} */}
+        {/* {isSubmitting && <p className='alert alert-warning'>Submitting...</p>} */}
       </div>
     </Modal>
   );

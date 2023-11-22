@@ -7,7 +7,7 @@ const Todos = ({ todos, onDelete, openEdit, onComplete }) => {
 
   return (
     <div className='todos'>
-      <h3 className='text-center'>ToDo List</h3>
+      <h3 className='text-center mb-3'>ToDo List</h3>
       <ToDoCount count={toDosCount} alertType='warning' info='tasks left' />
       <TodoList
         todos={todos}

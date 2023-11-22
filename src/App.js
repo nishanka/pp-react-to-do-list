@@ -15,15 +15,30 @@ import {
   filterTodosData,
   INITIAL_TODOS,
   INITIAL_COMPLETED_TODOS,
+  INITIAL_NOTIFICATION,
 } from './util/data';
+import NotificationBar from './components/UI/NotificationBar';
 
 function App() {
   const [todos, setTodos] = useState(INITIAL_TODOS);
   const [completedTodos, setCompletedTodos] = useState(INITIAL_COMPLETED_TODOS);
+  const [notification, setNotification] = useState(INITIAL_NOTIFICATION);
 
   const [isAdding, setIsAddingNew] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingItem, setEditingItem] = useState('');
+
+  const setNotificationData = (todoName, type, userAction) => {
+    setNotification({
+      type: type,
+      message: `Todo "${todoName}" - ${userAction}...! `,
+      visibility: true,
+    });
+
+    setTimeout(() => {
+      setNotification(INITIAL_NOTIFICATION);
+    }, 2000);
+  };
 
   useEffect(() => {
     setStoredData('todos', todos);
@@ -39,6 +54,8 @@ function App() {
   };
 
   const onDelete = (todoName) => {
+    setNotificationData(todoName, 'danger', 'DELETED');
+
     if (completedTodos.includes(todoName)) {
       const newCompletedTodos = completedTodos.filter(
         (item) => item !== todoName
@@ -46,6 +63,7 @@ function App() {
       setCompletedTodos(newCompletedTodos);
       return;
     }
+
     const newStoredTodos = filterTodosData('todos', todoName);
     setTodos(newStoredTodos);
   };
@@ -57,6 +75,7 @@ function App() {
 
   const onSubmitTodo = (todoName) => {
     setTodos((prevTodos) => [...prevTodos, todoName]);
+    setNotificationData(todoName, 'primary', 'ADDED');
   };
 
   const onUpdate = (prevname, updatedname) => {
@@ -67,8 +86,10 @@ function App() {
       }
       return item;
     });
+
     setStoredData('todos', updatedTodos);
     setTodos(updatedTodos);
+    setNotificationData(prevname, 'info', 'EDITED');
   };
 
   const onComplete = (todoName) => {
@@ -78,47 +99,57 @@ function App() {
     setCompletedTodos((prevCompletedTodos) => {
       return [...prevCompletedTodos, todoName];
     });
+    setNotificationData(todoName, 'success', 'COMPLETED');
   };
 
   return (
-    <MainContent>
-      <Header onClickAddTodo={toggleNewTodoForm} />
-
-      {isAdding && (
-        <NewTodo
-          onSubmit={onSubmitTodo}
-          onCancel={toggleNewTodoForm}
-          isAdding={isAdding}
+    <>
+      {notification.visibility && (
+        <NotificationBar
+          notificationType={notification.type}
+          notificationMessage={notification.message}
         />
       )}
 
-      {isEditing && (
-        <EditTodo
-          onSubmit={onUpdate}
-          onCancel={toggleEditTodoForm}
-          editingItem={editingItem}
-        />
-      )}
+      <MainContent>
+        <Header onClickAddTodo={toggleNewTodoForm} />
 
-      {!todos.length > 0 && (
-        <div className='alert alert-danger text-center fw-bold' role='alert'>
-          You have no ToDos...
-        </div>
-      )}
+        {isAdding && (
+          <NewTodo
+            onSubmit={onSubmitTodo}
+            onCancel={toggleNewTodoForm}
+            isAdding={isAdding}
+          />
+        )}
 
-      {todos.length > 0 && (
-        <Todos
-          todos={todos}
-          onDelete={onDelete}
-          openEdit={toggleEditTodoForm}
-          onComplete={onComplete}
-        />
-      )}
+        {isEditing && (
+          <EditTodo
+            onSubmit={onUpdate}
+            onCancel={toggleEditTodoForm}
+            editingItem={editingItem}
+          />
+        )}
 
-      {completedTodos.length > 0 && (
-        <CompletedTodos todos={completedTodos} onDelete={onDelete} />
-      )}
-    </MainContent>
+        {!todos.length > 0 && (
+          <div className='alert alert-danger text-center fw-bold' role='alert'>
+            You have no tasks to do...
+          </div>
+        )}
+
+        {todos.length > 0 && (
+          <Todos
+            todos={todos}
+            onDelete={onDelete}
+            openEdit={toggleEditTodoForm}
+            onComplete={onComplete}
+          />
+        )}
+
+        {completedTodos.length > 0 && (
+          <CompletedTodos todos={completedTodos} onDelete={onDelete} />
+        )}
+      </MainContent>
+    </>
   );
 }
 

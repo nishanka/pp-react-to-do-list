@@ -7,7 +7,7 @@ const TodoItem = ({ item, onDelete, onEdit, onComplete, category }) => {
   return (
     <li className={`${classes['todo-item']} list-group-item d-md-flex`}>
       <span className='flex-grow-1 ms-2'>{item}</span>
-      <div className={`${classes['todo-actions']} actions`}>
+      <div className={`${classes['todo-actions']} actions flex-shrink-0`}>
         {category !== 'completed' && (
           <Button
             btnClasses='btn-outline-success btn-sm'
@@ -18,7 +18,7 @@ const TodoItem = ({ item, onDelete, onEdit, onComplete, category }) => {
         )}
         {category !== 'completed' && (
           <Button
-            btnClasses='btn-outline-warning btn-sm'
+            btnClasses='btn-outline-info btn-sm'
             onClick={() => onEdit(item)}
           >
             Edit
