@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -9,145 +9,58 @@ import Todos from './components/Todos';
 import CompletedTodos from './components/CompletedTodos';
 import NewTodo from './components/NewTodo';
 import EditTodo from './components/EditTodo';
-import {
-  getStoredData,
-  setStoredData,
-  filterTodosData,
-  INITIAL_TODOS,
-  INITIAL_COMPLETED_TODOS,
-  INITIAL_NOTIFICATION,
-} from './util/data';
 import NotificationBar from './components/UI/NotificationBar';
 
+import FormContext from './store/form-context';
+import TodosContext from './store/todos-context';
+
 function App() {
-  const [todos, setTodos] = useState(INITIAL_TODOS);
-  const [completedTodos, setCompletedTodos] = useState(INITIAL_COMPLETED_TODOS);
-  const [notification, setNotification] = useState(INITIAL_NOTIFICATION);
+  const formCtx = useContext(FormContext);
+  const todosCtx = useContext(TodosContext);
 
-  const [isAdding, setIsAddingNew] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editingItem, setEditingItem] = useState('');
+  const isAdding = formCtx.formInfo.isAdding;
+  const isEditing = formCtx.formInfo.isEditing;
+  const notification = todosCtx.notification;
 
-  const setNotificationData = (todoName, type, userAction) => {
-    setNotification({
-      type: type,
-      message: `Todo "${todoName}" - ${userAction}...! `,
-      visibility: true,
-    });
-
-    setTimeout(() => {
-      setNotification(INITIAL_NOTIFICATION);
-    }, 2000);
-  };
+  const [showNotification, setShowNotification] = useState(false);
 
   useEffect(() => {
-    setStoredData('todos', todos);
-    setStoredData('completed-todos', completedTodos);
-  }, [todos, completedTodos]);
+    if (!notification.message.trim().length > 0) return;
 
-  useEffect(() => {
-    setTodos(getStoredData('todos'));
-  }, []);
+    if (notification.message.trim().length > 0) {
+      setShowNotification(true);
+      const timer = setTimeout(() => {
+        setShowNotification(false);
+      }, 3000);
 
-  const toggleNewTodoForm = () => {
-    setIsAddingNew(!isAdding);
-  };
-
-  const onDelete = (todoName) => {
-    setNotificationData(todoName, 'danger', 'DELETED');
-
-    if (completedTodos.includes(todoName)) {
-      const newCompletedTodos = completedTodos.filter(
-        (item) => item !== todoName
-      );
-      setCompletedTodos(newCompletedTodos);
-      return;
+      return () => {
+        clearTimeout(timer);
+      };
     }
 
-    const newStoredTodos = filterTodosData('todos', todoName);
-    setTodos(newStoredTodos);
-  };
-
-  const toggleEditTodoForm = (todoName) => {
-    setIsEditing(!isEditing);
-    setEditingItem(todoName);
-  };
-
-  const onSubmitTodo = (todoName) => {
-    setTodos((prevTodos) => [...prevTodos, todoName]);
-    setNotificationData(todoName, 'primary', 'ADDED');
-  };
-
-  const onUpdate = (prevname, updatedname) => {
-    const storedTodos = getStoredData('todos');
-    const updatedTodos = storedTodos.map((item) => {
-      if (item === prevname) {
-        return updatedname;
-      }
-      return item;
-    });
-
-    setStoredData('todos', updatedTodos);
-    setTodos(updatedTodos);
-    setNotificationData(prevname, 'info', 'EDITED');
-  };
-
-  const onComplete = (todoName) => {
-    const newStoredTodos = filterTodosData('todos', todoName);
-    setTodos(newStoredTodos);
-
-    setCompletedTodos((prevCompletedTodos) => {
-      return [...prevCompletedTodos, todoName];
-    });
-    setNotificationData(todoName, 'success', 'COMPLETED');
-  };
+    return;
+  }, [notification.message]);
 
   return (
     <>
-      {notification.visibility && (
-        <NotificationBar
-          notificationType={notification.type}
-          notificationMessage={notification.message}
-        />
-      )}
+      {showNotification && <NotificationBar />}
 
       <MainContent>
-        <Header onClickAddTodo={toggleNewTodoForm} />
+        <Header onClickAddTodo={formCtx.openNewTodoForm} />
 
-        {isAdding && (
-          <NewTodo
-            onSubmit={onSubmitTodo}
-            onCancel={toggleNewTodoForm}
-            isAdding={isAdding}
-          />
-        )}
+        {isAdding && <NewTodo />}
 
-        {isEditing && (
-          <EditTodo
-            onSubmit={onUpdate}
-            onCancel={toggleEditTodoForm}
-            editingItem={editingItem}
-          />
-        )}
+        {isEditing && <EditTodo />}
 
-        {!todos.length > 0 && (
+        {!todosCtx.todos.length > 0 && (
           <div className='alert alert-danger text-center fw-bold' role='alert'>
             You have no tasks to do...
           </div>
         )}
 
-        {todos.length > 0 && (
-          <Todos
-            todos={todos}
-            onDelete={onDelete}
-            openEdit={toggleEditTodoForm}
-            onComplete={onComplete}
-          />
-        )}
+        {todosCtx.todos.length > 0 && <Todos />}
 
-        {completedTodos.length > 0 && (
-          <CompletedTodos todos={completedTodos} onDelete={onDelete} />
-        )}
+        {todosCtx.completedTodos.length > 0 && <CompletedTodos />}
       </MainContent>
     </>
   );

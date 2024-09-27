@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import ToDoCount from './ToDoCount';
 import TodoList from './TodoList';
+import TodosContext from '../store/todos-context';
 
-const CompletedTodos = ({ todos, onDelete }) => {
-  const toDosCount = todos.length;
-  const category = 'completed';
+const CompletedTodos = () => {
+  const todosCtx = useContext(TodosContext);
+
+  const toDosCount = todosCtx.completedTodos.length;
+
+  const status = 'completed';
   const [toggleList, setToggleList] = useState(false);
 
   const toggleTodoList = () => {
@@ -22,7 +26,7 @@ const CompletedTodos = ({ todos, onDelete }) => {
         {toggleList ? '^' : '>'}
       </button>
       {toggleList && (
-        <TodoList todos={todos} onDelete={onDelete} category={category} />
+        <TodoList todos={todosCtx.completedTodos} status={status} />
       )}
     </div>
   );

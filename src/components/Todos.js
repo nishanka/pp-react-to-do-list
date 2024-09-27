@@ -1,19 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import TodoList from './TodoList';
 import ToDoCount from './ToDoCount';
+import TodosContext from '../store/todos-context';
 
-const Todos = ({ todos, onDelete, openEdit, onComplete }) => {
-  const toDosCount = todos.length;
+const Todos = () => {
+  const todosCtx = useContext(TodosContext);
+  const toDosCount = todosCtx.todos.length;
 
   return (
     <div className='todos'>
       <ToDoCount count={toDosCount} alertType='primary' info='tasks left' />
-      <TodoList
-        todos={todos}
-        onDelete={onDelete}
-        openEdit={openEdit}
-        onComplete={onComplete}
-      />
+      <TodoList todos={todosCtx.todos} />
     </div>
   );
 };

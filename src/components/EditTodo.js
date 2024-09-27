@@ -1,12 +1,18 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useContext } from 'react';
 import Modal from './UI/Modal';
 
 import CloseButton from './UI/CloseButton';
 import ToDoForm from './ToDoForm';
 import { isValidTodo } from '../util/validation.js';
+import FormContext from '../store/form-context.js';
+import TodosContext from '../store/todos-context.js';
 
-const EditTodo = ({ onCancel, onSubmit, editingItem }) => {
-  const [todoText, setTodoText] = useState(editingItem);
+const EditTodo = () => {
+  const formCtx = useContext(FormContext);
+  const todosCtx = useContext(TodosContext);
+  const initialTodotxt = formCtx.formInfo.editingItem;
+
+  const [todoText, setTodoText] = useState(initialTodotxt);
   const [taskIsInvalid, setTaskIsInvalid] = useState(false);
   const textInputRef = useRef();
 
@@ -24,19 +30,18 @@ const EditTodo = ({ onCancel, onSubmit, editingItem }) => {
       return;
     }
 
-    onSubmit(editingItem, todoText);
+    todosCtx.updateTodo(initialTodotxt, todoText);
     setTodoText('');
     textInputRef.current.focus();
-    onCancel();
+    formCtx.closeTodoForm();
   };
 
   return (
-    <Modal onClose={onCancel}>
+    <Modal onClose={formCtx.closeTodoForm}>
       <div className='edit-todo position-relative'>
         <h3 className='text-sm-center'>Edit ToDo</h3>
-        <CloseButton onClick={onCancel} />
+        <CloseButton onClick={formCtx.closeTodoForm} />
         <ToDoForm
-          onCancel={onCancel}
           onSubmit={handleSubmit}
           textInputRef={textInputRef}
           onChangeText={onChangeText}

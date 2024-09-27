@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Button from './UI/Button';
+import FormContext from '../store/form-context';
 
 const ToDoForm = ({
   onSubmit,
-  onCancel,
   textInputRef,
   onChangeText,
   todoText,
   taskIsInvalid,
 }) => {
+  const formCtx = useContext(FormContext);
+
   return (
     <form onSubmit={onSubmit}>
       <div className='mb-3'>
@@ -29,7 +31,11 @@ const ToDoForm = ({
         )}
       </div>
       <div className='actions d-flex justify-content-end'>
-        <Button type='button' btnClasses='btn-secondary' onClick={onCancel}>
+        <Button
+          type='button'
+          btnClasses='btn-secondary'
+          onClick={formCtx.closeTodoForm}
+        >
           Cancel
         </Button>
         <Button type='submit' btnClasses='btn-primary ms-2'>

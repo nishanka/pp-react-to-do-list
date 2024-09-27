@@ -1,15 +1,19 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useContext } from 'react';
 import Modal from './UI/Modal';
 
 import classes from './NewTodo.module.css';
 import CloseButton from './UI/CloseButton';
 import ToDoForm from './ToDoForm';
 import { isValidTodo } from '../util/validation.js';
+import TodosContext from '../store/todos-context.js';
+import FormContext from '../store/form-context.js';
 
-const NewTodo = ({ onCancel, onSubmit }) => {
+const NewTodo = () => {
+  const todosCtx = useContext(TodosContext);
+  const formCtx = useContext(FormContext);
+
   const [todoText, setTodoText] = useState('');
   const [taskIsInvalid, setTaskIsInvalid] = useState(false);
-  // const [isSubmitting, setIsSubmitting] = useState(true);
   const textInputRef = useRef();
 
   const onChangeText = (e) => {
@@ -19,38 +23,31 @@ const NewTodo = ({ onCancel, onSubmit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // setIsSubmitting(true);
 
     if (!isValidTodo(textInputRef)) {
-      // setIsSubmitting(false);
       setTaskIsInvalid(true);
       textInputRef.current.focus();
       return;
     }
 
     setTaskIsInvalid(false);
-    onSubmit(todoText);
+    todosCtx.addTodo(todoText);
     setTodoText('');
     textInputRef.current.focus();
-    // setIsSubmitting(false);
   };
 
   return (
-    <Modal onClose={onCancel}>
+    <Modal onClose={formCtx.closeTodoForm}>
       <div className={`${classes['new-todo']} position-relative`}>
         <h3 className='text-sm-center'>Add ToDo</h3>
-        <CloseButton onClick={onCancel} />
-        {/* {!isSubmitting && ( */}
+        <CloseButton onClick={formCtx.closeTodoForm} />
         <ToDoForm
-          onCancel={onCancel}
           onSubmit={handleSubmit}
           textInputRef={textInputRef}
           onChangeText={onChangeText}
           todoText={todoText}
           taskIsInvalid={taskIsInvalid}
         />
-        {/* )} */}
-        {/* {isSubmitting && <p className='alert alert-warning'>Submitting...</p>} */}
       </div>
     </Modal>
   );
